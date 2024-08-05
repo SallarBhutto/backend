@@ -19,4 +19,9 @@ export class RedisService {
   async getToken(userId: string): Promise<string | null> {
     return this.client.get(userId);
   }
+
+  async removeToken(token: string) {
+    // Assuming token is stored as a key, adjust accordingly
+    await this.client.del(token);
+  }
 }

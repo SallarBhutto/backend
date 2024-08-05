@@ -32,8 +32,12 @@ export class UserService {
     return users;
   }
 
-  findOne(id: string) {
-    return `This action returns a #${id} user`;
+  async findOne(id: string) {
+    const user = await this.userModel.findById(id).exec();
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    return user;
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
@@ -42,9 +46,5 @@ export class UserService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     return existingUser;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
   }
 }

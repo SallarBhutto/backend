@@ -109,4 +109,44 @@ export class AuthService {
       throw new Error(`Error creating user: ${error.message}`);
     }
   }
+
+  async signout(res: Response, token: string): Promise<void> {
+    try {
+      // Remove token from Redis
+      await this.redisService.removeToken(token);
+
+      // Delete the HTTP-only cookie
+      res.cookie('access_token', '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: new Date(0), // Set cookie expiration to the past
+      });
+    } catch (error) {
+      throw new Error(`Error logging out: ${error.message}`);
+    }
+  }
+
+  async checkAuth(token: string, res: Response): Promise<any> {
+    try {
+      const decoded = this.jwtService.verify(token);
+      const userId = decoded.sub;
+      
+      // Check token existence in Redis
+      const storedToken = await this.redisService.getToken(userId);
+      if (storedToken !== token) {
+        return null;
+      }
+
+      // Retrieve user information
+      const user = await this.userService.findOne(userId);
+      res.status(200).json({
+        _id: user._id,
+        username: user.username,
+        email: user.email
+      })
+    } catch (error) {
+      return null;
+    }
+  }
 }

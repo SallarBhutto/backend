@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { config } from 'dotenv';
+import * as cookieParser from 'cookie-parser';
 
 config(); // Load .env file variables into process.env
 
@@ -14,8 +15,15 @@ async function bootstrap() {
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
+  
   SwaggerModule.setup('api', app, document);
-  app.enableCors();
+  
+  app.use(cookieParser());
+
+  app.enableCors({
+    origin: 'http://localhost:3000', // Replace with your frontend URL
+    credentials: true, 
+  });
   await app.listen(3001);
   console.log('Backend is up on 3001');
 }
