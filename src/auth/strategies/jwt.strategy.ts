@@ -10,9 +10,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly redisService: RedisService,
     private readonly userService: UserService,
   ) {
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: "secretkey",
+      secretOrKey: process.env.JWT_SECRET || 'your_jwt_secret_key', 
     });
   }
 

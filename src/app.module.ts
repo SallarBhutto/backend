@@ -5,8 +5,6 @@ import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RedisService } from './redis/redis.service';
 import { AuthModule } from './auth/auth.module';
-import { AuthService } from './auth/auth.service';
-
 @Module({
   imports: [
     MongooseModule.forRoot("mongodb://root:example@127.0.0.1:27017/easygenerator?authSource=admin"),
