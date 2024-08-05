@@ -21,9 +21,9 @@ export class AuthService {
     console.log("AuthService: ", process.env.JWT_SECRET);
     const jwtSecret = process.env.JWT_SECRET;
     if (!jwtSecret) {
-      Logger.error('JWT_SECRET is not set!');
+      console.error('JWT_SECRET is not set!');
     } else {
-      Logger.log('JWT_SECRET is set.');
+      console.log('JWT_SECRET is set.');
     }
   }
 

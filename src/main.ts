@@ -1,10 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { config } from 'dotenv';
 import * as cookieParser from 'cookie-parser';
-
-config(); // Load .env file variables into process.env
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -20,8 +17,20 @@ async function bootstrap() {
   
   app.use(cookieParser());
 
+  const allowedOrigins = [
+    'http://localhost:3000',  // Local development
+    'http://frontend:3000',   // Docker environment
+    // Add other origins as needed
+  ];
+
   app.enableCors({
-    origin: 'http://localhost:3000', // Replace with your frontend URL
+    origin: (origin: string | undefined, callback: (err: Error | null, allowed: boolean) => void) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'), false);
+      }
+    },
     credentials: true, 
   });
   await app.listen(3001);

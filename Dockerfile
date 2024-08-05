@@ -1,8 +1,18 @@
-FROM node:16
+FROM node:18
+
+# Set working directory
 WORKDIR /app
-COPY package.json package-lock.json ./
+
+# Install app dependencies
+COPY package*.json ./
 RUN npm install
-COPY . ./
-RUN npm run build
+
+# Copy app source code
+COPY . .
+
+# Ensure native modules are built correctly
+RUN npm rebuild bcrypt
+
+# Expose port and start application
 EXPOSE 3001
-CMD ["node", "dist/main.js"]
+CMD ["npm", "start"]

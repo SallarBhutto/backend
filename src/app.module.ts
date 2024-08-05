@@ -5,9 +5,12 @@ import { UserModule } from './user/user.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RedisService } from './redis/redis.service';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
-    MongooseModule.forRoot("mongodb://root:example@127.0.0.1:27017/easygenerator?authSource=admin"),
+    ConfigModule.forRoot(),
+    // MongooseModule.forRoot("mongodb://root:example@127.0.0.1:27017/easygenerator?authSource=admin"),
+    MongooseModule.forRoot(process.env.MONGO_URI ? process.env.MONGO_URI : ""),
     AuthModule,
     UserModule,
   ],
